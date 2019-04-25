@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title> Royal Bank Exercise drilldown </title>
+    <!--AngularJS-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.0/angular.min.js"></script>
+    <script type=text/javascript src="{{url_for('static', filename='./main.js')}}"></script>
+   <!--UI Grid-->
+   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.7.0/angular-touch.js"></script>
+   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.7.0/angular-animate.js"></script>
+   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.7.0/angular-aria.js"></script>
+   <script src="http://ui-grid.info/docs/grunt-scripts/csv.js"></script>
+   <script src="http://ui-grid.info/docs/grunt-scripts/pdfmake.js"></script>
+   <script src="http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>
+   <script src="http://ui-grid.info/docs/grunt-scripts/lodash.min.js"></script>
+   <script src="http://ui-grid.info/docs/grunt-scripts/jszip.min.js"></script>
+   <script src="http://ui-grid.info/docs/grunt-scripts/excel-builder.dist.js"></script>
+   <link rel="stylesheet" href="http://ui-grid.info/release/ui-grid.css" type="text/css">
+   <script src="http://ui-grid.info/release/ui-grid.js"></script>
+</head>
+
+<body ng-app="myApp" ng-controller="focusCtrl">
+  <div ui-grid="sheetData" style="width: 200%; height: 98vh;overflow:hidden;"></div>
+</body>
+
+</html>

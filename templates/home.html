@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title> Royal Bank Exercise </title>
+    <!--AngularJS-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.0/angular.min.js"></script>
+    <script type=text/javascript src="{{url_for('static', filename='./main.js')}}"></script>
+       <!--UI Grid-->
+       <link rel="stylesheet" href="http://ui-grid.info/release/ui-grid.css" type="text/css">
+       <script src="http://ui-grid.info/release/ui-grid.js"></script>
+    <!--HIGH CHARTS-->
+    <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
+</head>
+
+<body ng-app="myApp" ng-controller="homeCtrl">
+    <select ng-model="choice" ng-options="x for x in sortOption" ng-change="optionSelect(choice)">
+    </select>
+    <hc-chart options="chartOptions">Placeholder for generic chart</hc-chart>
+</body>
+
+</html>
