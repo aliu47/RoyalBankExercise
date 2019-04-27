@@ -1,4 +1,4 @@
-var app = angular.module('myApp', ["ui.grid"]);
+var app = angular.module('myApp', ["ui.grid", 'ui.grid.infiniteScroll',]);
 // Directive for generic chart, pass in chart options
 app.directive('hcChart', function () {
     return {
@@ -69,14 +69,16 @@ app.config(['$interpolateProvider', function ($interpolateProvider) {
         }
         //default to source Graph
         $scope.choice = $scope.sortOption[0];
-        sourceSort();
+        Sort($scope.choice);
         $scope.optionSelect = function (choice) {
             console.log(choice);
             if (choice == $scope.sortOption[0]) {
-                sourceSort();
+                category = ['ABC System', 'BCD System', 'CDE System', 'DEF System', 'EFG System', 'FGH System']
+                Sort(choice, category);
             }
             else if (choice == $scope.sortOption[1]) {
-                ownerSort();
+                category = ['Owner1', 'Owner2', 'Owner3', 'Owner4', 'Owner5', 'Owner6']
+                Sort(choice, category);
 
             }
         };
@@ -90,118 +92,34 @@ app.config(['$interpolateProvider', function ($interpolateProvider) {
             window.open("./about/" + $scope.values, '_blank');
 
         }
-        //sort graph based on Management_Owner
-        function ownerSort() {
+        function Sort(choice, category) {
             try {
-                $http.get("http://localhost:5000/data")
+                $http.get("http://localhost:5000/dataCount?asofdate&" + choice)
                     .then(function (response) {
                         var data = response.data;
                         var data = data.data;
-                        var febData = [0, 0, 0, 0, 0, 0], marData = [0, 0, 0, 0, 0, 0];
+                        var febData = [], marData = [];
                         for (let index = 0; index < data.length; index++) {
                             date = data[index].asofdate;
-                            system = data[index].Management_Owner;
-                            if (date.includes("2019-03-31")) {
-                                // marData.push(data[index])
-                                if (system.includes("1"))
-                                    marData[0]++;
-                                if (system.includes("2"))
-                                    marData[1]++;
-                                if (system.includes("3"))
-                                    marData[2]++;
-                                if (system.includes("4"))
-                                    marData[3]++;
-                                if (system.includes("5"))
-                                    marData[4]++;
-                                if (system.includes("6"))
-                                    marData[5]++;
-                            }
+                            system = data[index][choice];
+                            count = data[index].counts;
                             if (date.includes("2019-02-28")) {
-                                // febData.push(data[index]);
-                                if (system.includes("1"))
-                                    febData[0]++;
-                                if (system.includes("2"))
-                                    febData[1]++;
-                                if (system.includes("3"))
-                                    febData[2]++;
-                                if (system.includes("4"))
-                                    febData[3]++;
-                                if (system.includes("5"))
-                                    febData[4]++;
-                                if (system.includes("6"))
-                                    febData[5]++;
+                                febData[index] = count;
+                            }
+                            else if (date.includes("2019-03-31")) {
+                                marData[index] = count;
                             }
                         }
                         $scope.chartOptions = {
-
                             xAxis: {
-                                categories: ['Owner1', 'Owner2', 'Owner3', 'Owner4', 'Owner5', 'Owner6']
+                                categories: category
                             },
                             series: [{
                                 name: '2019-02-28',
                                 data: [febData[0], febData[1], febData[2], febData[3], febData[4], febData[5]],
                             }, {
                                 name: '2019-03-31',
-                                data: [marData[0], marData[1], marData[2], marData[3], marData[4], marData[5]],
-                            }]
-                        }
-                    })
-            } catch (err) {
-                console.log("Error getting data");
-            }
-        }
-        //sort graph based on Source_System
-        function sourceSort() {
-            try {
-                $http.get("http://localhost:5000/data")
-                    .then(function (response) {
-                        var data = response.data;
-                        var data = data.data;
-                        var febData = [0, 0, 0, 0, 0, 0], marData = [0, 0, 0, 0, 0, 0];
-                        for (let index = 0; index < data.length; index++) {
-                            date = data[index].asofdate;
-                            system = data[index].Source_System
-                            if (date.includes("2019-03-31")) {
-                                // marData.push(data[index])
-                                if (system.includes("ABC"))
-                                    marData[0]++;
-                                if (system.includes("BCD"))
-                                    marData[1]++;
-                                if (system.includes("CDE"))
-                                    marData[2]++;
-                                if (system.includes("DEF"))
-                                    marData[3]++;
-                                if (system.includes("EFG"))
-                                    marData[4]++;
-                                if (system.includes("FGH"))
-                                    marData[5]++;
-                            }
-                            if (date.includes("2019-02-28")) {
-                                // febData.push(data[index]);
-                                if (system.includes("ABC"))
-                                    febData[0]++;
-                                if (system.includes("BCD"))
-                                    febData[1]++;
-                                if (system.includes("CDE"))
-                                    febData[2]++;
-                                if (system.includes("DEF"))
-                                    febData[3]++;
-                                if (system.includes("EFG"))
-                                    febData[4]++;
-                                if (system.includes("FGH"))
-                                    febData[5]++;
-                            }
-                        }
-                        $scope.chartOptions = {
-                            xAxis: {
-                                categories: ['ABC System', 'BCD System', 'CDE System', 'DEF System', 'EFG System', 'FGH System']
-                            },
-                            series: [{
-                                name: '2019-02-28',
-                                data: [febData[0], febData[1], febData[2], febData[3], febData[4], febData[5]],
-                            }, {
-                                name: '2019-03-31',
-                                data: [marData[0], marData[1], marData[2], marData[3], marData[4], marData[5]],
+                                data: [marData[6], marData[7], marData[8], marData[9], marData[10], marData[11]],
                             }]
                         }
                     })
@@ -212,14 +130,21 @@ app.config(['$interpolateProvider', function ($interpolateProvider) {
     })
     //Controller for specific table
     .controller('focusCtrl', function ($scope, $http, $location) {
-        $scope.sheetData = {}
+        $scope.gridOptions = {}
+
         //read data from url to make GET request
         var url = $location.url();
         url = url.replace(/(about)/g, "");
         url = url.replace(/([/])/g, '');
-        $http.get("http://localhost:5000/data?" + url)
+        $http.get("http://localhost:5000/dataSort?" + url)
             .then(function (response) {
                 var data = response.data;
-                $scope.sheetData.data = data.data;
+                sheetData = data.data;
+                $scope.gridOptions = {
+                    data: sheetData,
+                    enableHorizontalScrollbar: false,
+                    enableVerticalScrollbar: false,
+
+                }
             })
     });

@@ -13,7 +13,7 @@ sheet_obj = wb_obj.worksheets[1]
 def generateKey(sheet_obj,row):
     keyList=[]
     for r in sheet_obj[row]:
-        keyList.append(str(r.value))
+        keyList.append(str(r.value).strip())
     return keyList
 def readData(sheet_obj,key,row):
     data={}
@@ -43,7 +43,4 @@ params={"Source_System":"ABC","asofdate":"2019-02-28"}
 x=sortData(xlsxData,params)
 xlsxData=tuple(xlsxData)
 args = "ABC"
-# for i in key:
-#             if i in args:
-#                 xlsxData.keys(i)      
 print(x)
