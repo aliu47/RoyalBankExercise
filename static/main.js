@@ -1,4 +1,4 @@
-var app = angular.module('myApp', ["ui.grid", 'ui.grid.infiniteScroll',]);
+var app = angular.module('myApp', ["ui.grid"]);
 // Directive for generic chart, pass in chart options
 app.directive('hcChart', function () {
     return {
@@ -129,22 +129,23 @@ app.config(['$interpolateProvider', function ($interpolateProvider) {
         }
     })
     //Controller for specific table
-    .controller('focusCtrl', function ($scope, $http, $location) {
-        $scope.gridOptions = {}
-
+    .controller('focusCtrl', function ($scope, $http, $location,) {
+        $scope.gridOptions = {};
+        // maximum rows that can be rendered outside of the view
+        $scope.gridOptions.excessRows=100;
         //read data from url to make GET request
         var url = $location.url();
         url = url.replace(/(about)/g, "");
         url = url.replace(/([/])/g, '');
+        
         $http.get("http://localhost:5000/dataSort?" + url)
             .then(function (response) {
                 var data = response.data;
                 sheetData = data.data;
                 $scope.gridOptions = {
                     data: sheetData,
-                    enableHorizontalScrollbar: false,
-                    enableVerticalScrollbar: false,
-
                 }
+                console.log(sheetData.length);
             })
+
     });

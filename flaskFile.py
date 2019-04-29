@@ -30,32 +30,32 @@ def countData(df,params):
     return a
 
 def sortData(df,params):
-    key=[]
-    values=[]
+    sort = df
     for x,y in params.items():
-        key.append(x)
-        values.append(y)
-    sort = df[df[key[0]].str.contains(values[0])]
-    if(key[1]=='asofdate'):
-        values[1]=pandas.to_datetime(values[1], format='%Y-%m-%d %H:%M:%S')
-        sort = sort[sort[key[1]]==values[1]]
-    sort=sort.to_dict('records')
-    return sort
-        
-
+        if(df[x].dtypes == "object"):
+            sort = sort[sort[x].str.contains(y)]
+        elif(df[x].dtypes == "datetime64[ns]"):
+            date=pandas.to_datetime(y, format='%Y-%m-%d %H:%M:%S')
+            sort = sort[sort[x]==date]
+        else:
+            sort = sort[sort[x]==y]
+    print("date:"+str(sort["asofdate"].dtypes))
+    sort = sort.replace({pandas.np.nan: None})
+    sort = sort.to_dict('records')
+    return sort  
+  
 app = Flask(__name__)
 app.json_encoder = CustomJSONEncoder
 api = Api(app)
 app.config['JSON_SORT_KEYS'] = False
 # Flask mishandles boolean as string
 TRUTHY = ['true', 'True', 'yes']
-#get data
 path = ("./data/GRM_IssueDB_Dummy.xlsx") 
 df = pandas.read_excel(path,sheet_name="GRM_Issue_Repository")
 df=df.rename(columns = {'Notes(Status Update)':'Notes_Status_Update'})
 df=df.rename(columns = {'CCAR_v.non-CCAR':'CCAR_v_non-CCAR'})
-df = df.replace({pandas.np.nan: None})
-   
+dfAll=df.replace({pandas.np.nan: None})
+       
 @app.route("/")
 def home():
     return render_template('home.html')
@@ -66,7 +66,7 @@ def about(variable):
 
 class returnAll(Resource):
     def get(self):
-        allData=df.to_dict('records') 
+        allData=dfAll.to_dict('records') 
         return jsonify({"data":allData})
 
 class dataCount(Resource):

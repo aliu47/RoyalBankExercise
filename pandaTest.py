@@ -5,19 +5,22 @@ from pandas import DataFrame,Series
 path = ("./data/GRM_IssueDB_Dummy.xlsx") 
 df = pandas.read_excel(path,sheet_name="GRM_Issue_Repository",)
 df=df.rename(columns = {'Notes(Status Update)':'Notes_Status_Update'})
+df=df.rename(columns = {'CCAR_v.non-CCAR':'CCAR_v_non-CCAR'})
+# df = df.replace({pandas.np.nan: None})
+
 def sortData(df,params):
-    key=[]
-    values=[]
+    sort = df
     for x,y in params.items():
-        key.append(x)
-        values.append(y)
-    print(key[0])
-    print(values[0])
-    sort = df[df[key[0]].str.contains(values[0])]
-    sort = sort[sort[key[1]]==values[1]]
-    sort=sort.to_dict('records')
-    print(sort)
-    return sort
+        if(df[x].dtypes == "datetime64[ns]"):
+            date=pandas.to_datetime(y, format='%Y-%m-%d %H:%M:%S')
+            sort = sort[sort[x]==date]
+        elif(df[x].dtypes == "object"):
+            sort = sort[sort[x].str.contains(y)]
+        else:
+            sort = sort[sort[x]==y]
+    print("data: "+str(sort["asofdate"].dtypes))
+    sort = sort.to_dict('records')
+    return sort   
     
 def dataParams(params):
     path = ("./data/GRM_IssueDB_Dummy.xlsx") 
@@ -33,8 +36,8 @@ def dataParams(params):
     a=a.to_dict('records')
     return a
 params={
-    "Source_System": "ABC System",
-        "asofdate": "2-28-2019"
+    "Source_System": "ABC",
+        "asofdate": "2019-02-28"
 }
 a=sortData(df,params)
 print(a)
