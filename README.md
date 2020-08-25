@@ -1,3 +1,6 @@
+Formated Doc:
+https://docs.google.com/document/d/1oSKmxELI7qS89qoVpHJPmeaY7dsH_YHuCUcrMXvBZzM/edit?usp=sharing
+
 Canadian Royal Bank Exercise
 
 I.Problem: Create a web application that can read data from an excel spreadsheet, then create a graph based on the information provided. The graph should be able to be generated based on either Management Owners or Source System. Then if the user clicks on a bar, it should open a new tab of a spreadsheet with the information of that bar.
